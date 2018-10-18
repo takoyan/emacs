@@ -1,0 +1,219 @@
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+
+;; package管理
+(package-initialize)
+(setq package-archives
+      '(("gnu" . "http://elpa.gnu.org/packages/")
+        ("melpa" . "http://melpa.org/packages/")
+        ("org" . "http://orgmode.org/elpa/")))
+(add-to-list 'load-path "/usr/local/share/gtags")
+(package-initialize)
+(set-face-background 'default "gray20")
+(add-to-list 'default-frame-alist '(foreground-color . "white")
+			'(cursor-type      . "bar") )
+;;; 種類ごとの色
+;(add-hook 'font-lock-mode-hook
+ ; '(lambda ()
+  ;  ;(set-face-foreground 'font-lock-comment-face "chocolate1")
+   ; (set-face-foreground 'font-lock-comment-face "#f69933")  ; 微調整
+   ; (set-face-foreground 'font-lock-string-face "LightSalmon")
+    ;(set-face-foreground 'font-lock-keyword-face "Cyan1")
+  ;  (set-face-foreground 'font-lock-keyword-face "green2")  ; 微調整
+   ; (set-face-foreground 'font-lock-builtin-face "LightSteelBlue")
+    ;(set-face-foreground 'font-lock-function-name-face "LightSkyBlue")
+  ;  (set-face-foreground 'font-lock-variable-name-face "Pink")
+  ;  (set-face-foreground 'font-lock-type-face "green2")
+  ;  (set-face-foreground 'font-lock-constant-face "red")
+  ;  (set-face-foreground 'font-lock-warning-face "Pink")
+ ; )
+ ; )
+
+(load-thme 'atom-dark t)
+;; line numberの表示
+(require 'linum)
+(global-linum-mode 1)
+
+;; tabサイズ
+(setq default-tab-width 4)
+
+;;; *.~ とかのバックアップファイルを作らない
+(setq make-backup-files nil)
+;;; .#* とかのバックアップファイルを作らない
+(setq auto-save-default nil)
+
+;; カーソルの点滅をやめる
+(blink-cursor-mode 0)
+
+
+;; カーソル行をハイライトする
+(global-hl-line-mode t)
+
+;;選択行をハイライト
+(transient-mark-mode t)
+
+;; 対応する括弧を光らせる
+(show-paren-mode 1)
+(setq show-paren-style 'expression)
+
+;;; 起動時の画面はいらない
+(setq inhibit-startup-message t)
+
+;; 選択範囲に色をつける
+(transient-mark-mode t)
+(set-face-background 'region "#ff0048") ;選択範囲の色
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(hl-line ((t (:background "MediumBlue"))))
+ '(transient ((t (:background "red")))))
+
+;;
+;; Auto Complete
+;;
+
+
+
+;;補完
+(add-hook 'c-mode-hook
+		  (lambda ()
+			(require 'auto-complete)))
+
+(add-hook 'c++-mode-hook
+		  (lambda ()
+			require 'auto-complete))
+
+;;treeを表示
+(require 'neotree)
+(global-set-key "\C-a" 'neotree-toggle)
+
+;; 現在ポイントがある関数名をモードラインに表示
+(which-function-mode 1)
+
+;; スクロールは1行ごとに
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 5)))
+
+;; スクロールの加速をやめる
+(setq mouse-wheel-progressive-speed nil)
+
+;; bufferの最後でカーソルを動かそうとしても音をならなくする
+(defun next-line (arg)
+  (interactive "p")
+  (condition-case nil
+      (line-move arg)
+    (end-of-buffer)))
+
+;; 自動エラーチェック
+(require 'flymake)
+(defun flymake-get-make-cmdline (source base-dir)
+  (list "make"
+        (list "-s" "-C"
+              base-dir
+              (concat "CHK_SOURCES=" source)
+              "SYNTAX_CHECK_MODE=1")))
+(global-set-key "\C-d" 'flymake)
+
+;;自動エラーチェック
+(require 'flycheck)
+(global-flycheck-mode)
+(global-set-key "\C-cn" 'flycheck-next-error)
+(global-set-key "\C-cp" 'flycheck-previous-error)
+;; エラー音をならなくする
+(setq ring-bell-function 'ignore)
+
+;; 行末の空白を強調表示
+(setq-default show-trailing-whitespace t)
+(set-face-background 'trailing-whitespace "#b14770")
+
+
+;;括弧2個
+(add-hook 'c-mode-common-hook
+          (lambda ()
+         ;;(define-key c-mode-base-map "\"" 'electric-pair)
+         ;;(define-key c-mode-base-map "\'" 'electric-pair)
+         (define-key c-mode-base-map "(" 'electric-pair)
+         (define-key c-mode-base-map "[" 'electric-pair)
+         (define-key c-mode-base-map "{" 'electric-pair)))
+
+
+;;括弧2個
+(add-hook 'python-mode-hook
+          (lambda ()
+            (define-key python-mode-map "\"" 'electric-pair)
+            (define-key python-mode-map "\'" 'electric-pair)
+			(define-key python-mode-map "(" 'electric-pair)
+            (define-key python-mode-map "[" 'electric-pair)
+            (define-key python-mode-map "{" 'electric-pair)))
+
+
+(defun electric-pair ()
+  "Insert character pair without sournding spaces"
+  (interactive)
+  (let (parens-require-spaces)
+    (insert-pair)))
+
+
+;;pythonの時の色指定
+;(require 'python-mode)
+;(set-face-foreground 'py-variable-name-face "red")
+;(set-face-foreground 'py-import-from-face "pink1")
+;(set-face-foreground 'py-builtins-face "maroon2")
+
+
+;;cの補完
+;;(require 'auto-complete-c-headers)
+;;(add-hook 'c++-mode-hook '(setq ac-sources (append ac-sources '(ac-source-c-headers))))
+;;(add-hook 'c-mode-hook '(setq ac-sources (append ac-sources '(ac-source-c-;;全検索のショートカットキー 設定
+
+;;(setq tags-table-list '("~/.emacs.d/soccer_tag"))
+;;定義ジャンプのショートカットキー
+(define-key global-map "\C-f" 'grep-find)
+;(define-key global-map "\C-d" 'xref-find-definitions)
+(define-key global-map "\C-e" 'pop-tag-mark)
+(define-key global-map "\C-s" 'save-buffer)
+(define-key global-map "\C-w" 'write-file)
+(define-key global-map "\C-z" 'advertised-undo)
+(define-key global-map "\C-cc" 'copy-region-as-kill)
+(define-key global-map "\C-v" 'yank)
+(define-key global-map "\C-q" 'save-buffers-kill-emacs)
+(define-key global-map "\C-t" 'compile)
+(define-key global-map "\C-n" 'next-error)
+(define-key global-map "\C-r" 'query-replace)
+
+;;カーソル変更
+
+
+
+;;指定文字のハイライト
+(require 'auto-highlight-symbol)
+(global-auto-highlight-symbol-mode t)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ahs-default-range (quote ahs-range-whole-buffer))
+ '(package-selected-packages
+   (quote
+	(atom-dark-theme flycheck python-mode neotree company auto-highlight-symbol))))
+
+(add-hook 'c-mode-hook
+		  (lambda ()
+			(require 'company)
+(setq company-idle-delay 0) ; デフォルトは0.5
+(setq company-minimum-prefix-length 2) ; デフォルトは4
+(setq company-selection-wrap-around t))) ; 候補の一番下でさらに下に行こうとすると一番上に戻る
+
+
+(require 'epc)
+(require 'auto-complete-config)
+(require 'python)
+(setenv "PYTHONPATH" " /usr/local/lib/python2.7/dist-packages/")
+(require 'jedi)
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
