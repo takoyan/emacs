@@ -186,9 +186,36 @@
 (require 'auto-complete-config)
 (require 'python)
 (setenv "PYTHONPATH" "/usr/local/lib/python2.7/dist-packages/")
+(setenv "PYTHONPATH" "/usr/lib/python2.7/dist-packages/")
 (require 'jedi)
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
+
+
+
+
+
+;;Latex
+(setq auto-mode-alist
+      (cons (cons "\\.tex$" 'yatex-mode) auto-mode-alist))
+(autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
+(setq YaTeX-prefix "\C-t")
+(setq tex-command "platex")
+(setq bibtex-command "pbibtex")
+(setq dviprint-command-format "dvipdfmx %s")
+;; use utf-8 on yatex mode
+(setq YaTeX-kanji-code 4)
+
+(add-hook 'yatex-mode-hook
+         '(lambda ()
+         (YaTeX-define-key "p" 'latex-math-preview-expression)
+         (YaTeX-define-key "\C-p" 'latex-math-preview-save-image-file)
+         (YaTeX-define-key "j" 'latex-math-preview-insert-symbol)
+         (YaTeX-define-key "\C-j" 'latex-math-preview-last-symbol-again)
+         (YaTeX-define-key "\C-b" 'latex-math-preview-beamer-frame)))
+(setq latex-math-preview-in-math-mode-p-func 'YaTeX-in-math-mode-p)
+
+(add-hook 'yatex-mode-hook 'turn-on-reftex) ;;C-c [
 
 
 
@@ -204,7 +231,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-	(jedi-direx ensime use-package company-jedi rainbow-mode company-tern web-mode js2-mode js-auto-format-mode irony python-mode neotree jedi flycheck company auto-highlight-symbol atom-one-dark-theme atom-dark-theme))))
+	(clang-format yatex jedi-direx ensime use-package company-jedi rainbow-mode company-tern web-mode js2-mode js-auto-format-mode irony python-mode neotree jedi flycheck company auto-highlight-symbol atom-one-dark-theme atom-dark-theme))))
 
 (add-hook 'js-mode-hook #'js-auto-format-mode)
 ;;(add-hook 'js-mode-hook #'add-node-modules-path)
