@@ -17,7 +17,7 @@
 (global-linum-mode 1)
 
 ;; tabサイズ
-(setq default-tab-width 4)
+(setq-default tab-width 4 indent-tabs-mode nil)
 
 ;;; *.~ とかのバックアップファイルを作らない
 (setq make-backup-files nil)
@@ -57,6 +57,13 @@
 
 ;; スクロールの加速をやめる
 (setq mouse-wheel-progressive-speed nil)
+
+;;メニューバー削除
+(menu-bar-mode -1)
+
+;;ツールバー削除
+(tool-bar-mode -1)
+
 
 ;; bufferの最後でカーソルを動かそうとしても音をならなくする
 (defun next-line (arg)
@@ -163,6 +170,9 @@
 			(require 'auto-complete)))
 
 
+;;kotlin
+
+
 
 ;;java8
 (use-package ensime
@@ -187,11 +197,17 @@
 (require 'python)
 (setenv "PYTHONPATH" "/usr/local/lib/python2.7/dist-packages/")
 (setenv "PYTHONPATH" "/usr/lib/python2.7/dist-packages/")
+;(setenv "PYTHONPATH""/home/takoyan/.pyenv/versions/anaconda3-4.3.0/lib/python3.6/site-packages/")
 (require 'jedi)
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
 
 
+;;ROS
+(add-to-list 'load-path "/opt/ros/kinetic/share/emacs/site-lisp")
+(require 'rosemacs)
+(invoke-rosemacs)
+(global-set-key "\C-x\C-r" ros-keymap)
 
 
 
@@ -218,6 +234,11 @@
 (add-hook 'yatex-mode-hook 'turn-on-reftex) ;;C-c [
 
 
+;;markdown
+(autoload 'markdown-preview-mode "markdown-preview-mode.el" t)
+(setq markdown-preview-stylesheets (list "github.css"))
+
+
 
 
 
@@ -231,7 +252,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-	(clang-format yatex jedi-direx ensime use-package company-jedi rainbow-mode company-tern web-mode js2-mode js-auto-format-mode irony python-mode neotree jedi flycheck company auto-highlight-symbol atom-one-dark-theme atom-dark-theme))))
+    (flymd markdown-mode websocket web-server kotlin-mode flutter clang-format yatex jedi-direx ensime use-package company-jedi rainbow-mode company-tern web-mode js2-mode js-auto-format-mode irony python-mode neotree jedi flycheck company auto-highlight-symbol atom-one-dark-theme atom-dark-theme))))
 
 (add-hook 'js-mode-hook #'js-auto-format-mode)
 ;;(add-hook 'js-mode-hook #'add-node-modules-path)
